@@ -21,7 +21,7 @@ class User(AbstractUser):
         return self.job_set.all()
 
 class Job(models.Model):
-    job_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -32,3 +32,19 @@ class Job(models.Model):
 
     def __str__(self) -> str:
         return self.title
+    
+    """ Returns all the applications for this job
+
+    Returns:
+        [QuerySet]: jobs with foreign connection to this job
+    """
+    def get_all_applications(self):
+        return self.application_set.all()
+    
+class Application(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    job_id=models.ForeignKey(Job,on_delete=models.CASCADE)
+    resume_link=models.CharField(max_length=100,null=False,blank=False)
+    name=models.CharField(max_length=100,blank=True,null=True)
+    email=models.EmailField(blank=True,null=True)
+    github=models.URLField(blank=True,null=True)
