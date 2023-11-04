@@ -49,3 +49,4 @@ class Application(models.Model):
     email=models.EmailField(blank=True,null=True)
     github=models.URLField(blank=True,null=True)
     analytics=models.JSONField(blank=True,null=True)
+    rating=models.FloatField(blank=False,null=True)
