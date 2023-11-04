@@ -7,6 +7,7 @@ from .agents.project_evaluator import ProjectEvaluator
 from .utils import get_repo_description,get_resume_from_url,extract_github_urls, check_for_inclusion_from_resume, extract_info_from_resume
 
 def get_question_from_jd(jd):
+    jd += "\n\nNOTE: in your output terminate each question with a new line character"
     hr_manager = HRManager()
     user_proxy = ConversationInitializer()
     user_proxy.initiate_chat(
