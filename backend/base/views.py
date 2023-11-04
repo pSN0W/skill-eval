@@ -76,9 +76,14 @@ def create_user(request):
 @permission_classes([IsAuthenticated])
 def get_all_jobs(request):
     """Api View to get all the jobs posted by the HR"""
-    user = request.user
-    jobs = user.get_all_jobs()
-    serialized_job = JobSerializer(jobs, many=True)
+    try:
+        user = request.user
+        jobs = user.get_all_jobs()
+        serialized_job = JobSerializer(jobs, many=True)
+    except Exception as e:
+        message = {'detail':str(e)}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
+
     return Response(serialized_job.data)
 
 
@@ -87,53 +92,70 @@ def get_all_jobs(request):
 def create_job(request):
     """Api View to create a new job"""
     
-    data = request.data
+    try:
+        data = request.data
 
-    job = Job.objects.create(
-        creator=request.user,
-        title=data["title"],
-        description=data["description"],
-        location=data["location"]
-    )
+        job = Job.objects.create(
+            creator=request.user,
+            title=data["title"],
+            description=data["description"],
+            location=data["location"]
+        )
 
-    job.save()
-    
-    user = request.user
-    jobs = user.get_all_jobs()
-    serialized_job = JobSerializer(jobs, many=True)
-    return Response(serialized_job.data)
+        job.save()
+        
+        user = request.user
+        jobs = user.get_all_jobs()
+        serialized_job = JobSerializer(jobs, many=True)
+        
+        return Response(serialized_job.data)
+    except Exception as e:
+        message = {'detail':str(e)}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated,JobPermissions])
 def get_all_applications(request,pk):
-    job = Job.objects.get(id=pk)
-    JobPermissions().has_object_permission(request,None,job)
-    applications = job.get_all_applications()
-    serialized_applications = ApplicationBriefSerializer(applications,many=True)
-    return Response(serialized_applications.data)
+    try:
+        job = Job.objects.get(id=pk)
+        JobPermissions().has_object_permission(request,None,job)
+        applications = job.get_all_applications()
+        serialized_applications = ApplicationBriefSerializer(applications,many=True)
+        return Response(serialized_applications.data)
+    except Exception as e:
+        message = {'detail':str(e)}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated,JobPermissions])
 def create_application(request,pk):
-    job = Job.objects.get(id=pk)
-    JobPermissions().has_object_permission(request,None,job)
-    application = Application.objects.create(
-        resume_url=request.data["resume_url"],
-        job_id=job
-    )
-    
-    application.save()
-    applications = job.get_all_applications()
-    serialized_applications = ApplicationBriefSerializer(applications,many=True)
-    
-    return Response(serialized_applications.data)
+    try:
+        job = Job.objects.get(id=pk)
+        JobPermissions().has_object_permission(request,None,job)
+        application = Application.objects.create(
+            resume_url=request.data["resume_url"],
+            job_id=job
+        )
+        
+        application.save()
+        applications = job.get_all_applications()
+        serialized_applications = ApplicationBriefSerializer(applications,many=True)
+        
+        return Response(serialized_applications.data)
+    except Exception as e:
+        message = {'detail':str(e)}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated,ApplicationPermissions])
 def get_application(request,pk):
-    application = Application.objects.get(id=pk)
-    ApplicationPermissions().has_object_permission(request,None,application)
-    serialized_application = ApplicationSerializer(application,many=False)
-    return Response(serialized_application.data)
+    try:
+        application = Application.objects.get(id=pk)
+        ApplicationPermissions().has_object_permission(request,None,application)
+        serialized_application = ApplicationSerializer(application,many=False)
+        return Response(serialized_application.data)
+    except Exception as e:
+        message = {'detail':str(e)}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
