@@ -9,9 +9,12 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from utils import extract_info_from_resume
+
 from .serializers import ApplicationBriefSerializer,UserSerializerWithToken, JobSerializer, ApplicationSerializer
 from .models import User,Job, Application
 from .permissions import JobPermissions, ApplicationPermissions
+
 # Create your views here.
 
 
@@ -136,10 +139,14 @@ def create_application(request,pk):
             resume_url=request.data["resume_url"],
             job_id=job
         )
-        
+        extracted_information = extract_info_from_resume(request.data["resume_url"])
+
+        application.name = extracted_information["name"]
+        application.github = extracted_information["github"]
+        application.email = extracted_information["email"]
+
         application.save()
-        applications = job.get_all_applications()
-        serialized_applications = ApplicationBriefSerializer(applications,many=True)
+        serialized_applications = ApplicationBriefSerializer(application,many=False)
         
         return Response(serialized_applications.data)
     except Exception as e:
@@ -153,6 +160,7 @@ def get_application(request,pk):
         application = Application.objects.get(id=pk)
         ApplicationPermissions().has_object_permission(request,None,application)
         serialized_application = ApplicationSerializer(application,many=False)
+
         return Response(serialized_application.data)
     except Exception as e:
         message = {'detail':str(e)}
