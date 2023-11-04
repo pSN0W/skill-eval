@@ -3,9 +3,8 @@ from .agents.candidate import Candidate
 from .agents.hr_manager import HRManager
 from .agents.interviewer import Interviewer
 from .agents.interview_evaluator import InterviewEvaluator
-from .agents.resume_extractor import ResumeExtractor
 from .agents.project_evaluator import ProjectEvaluator
-from .utils import get_repo_description,get_resume_from_url,extract_github_urls, check_for_inclusion_from_resume
+from .utils import get_repo_description,get_resume_from_url,extract_github_urls, check_for_inclusion_from_resume, extract_info_from_resume
 
 def get_question_from_jd(jd):
     hr_manager = HRManager()
@@ -29,26 +28,19 @@ def get_question_rating(que,resume_url):
             if score["complexity"] + score["uniqueness"] < project_rating["complexity"] + project_rating["uniqueness"]:
                 score = project_rating
                 score["reference"] = url
-    # elif check_for_inclusion_from_resume(interview_minute,resume_info):
-    #     score = {
-    #         "complexity": 10, 
-    #         "uniqueness": 10, 
-    #         "reason": "Candidate refered their work experience", 
-    #         "reference": "work"
-    #     }
-    # else:
-    #     score = {
-    #         "complexity": 0, 
-    #         "uniqueness": 0, 
-    #         "reason": "Candidate didn't refer anything", 
-    #         "reference": "none"
-    #     }
-    else:
+    elif check_for_inclusion_from_resume(interview_minute,resume_info):
         score = {
             "complexity": 10, 
             "uniqueness": 10, 
             "reason": "Candidate refered their work experience", 
             "reference": "work"
+        }
+    else:
+        score = {
+            "complexity": 0, 
+            "uniqueness": 0, 
+            "reason": "Candidate didn't refer anything", 
+            "reference": "none"
         }
     weightage = (score["complexity"] + score["uniqueness"])/20
     
@@ -93,12 +85,3 @@ def get_interview_score(interview_minute):
         message=interview_minute
     )
     return evaluator.get_rating()
-
-def extract_info_from_resume(resume):
-    resume_extractor = ResumeExtractor()
-    user_proxy = ConversationInitializer()
-    user_proxy.initiate_chat(
-        resume_extractor,
-        message=resume
-    )
-    return resume_extractor.extract_info()
