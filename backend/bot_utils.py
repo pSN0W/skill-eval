@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from .agents.conversation_initializer import ConversationInitializer
 from .agents.candidate import Candidate
 from .agents.hr_manager import HRManager
@@ -15,6 +17,20 @@ def get_question_from_jd(jd):
     )
     return hr_manager.get_questions()
 
+def get_candidate_rating(questions, resume_url):
+    final_score = defaultdict()
+    chat = ""
+    for question in questions:
+        res = get_question_rating(question, resume_url)
+        score = res["score"]
+        conversation = res["conversation"]
+        chat += f"{conversation} \n"
+        for k,v in score.items():
+            if v is not None:
+                final_score[k].append(v)
+    rating = {k:sum(v)/len(v) for k,v in final_score.items()}
+    return rating,chat
+    
 def get_question_rating(que,resume_url):
     resume = get_resume_from_url(resume_url)
     interview_minute = get_interview_minute(que,resume)
