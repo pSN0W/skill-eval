@@ -104,9 +104,7 @@ def create_job(request):
 
         job.save()
         
-        user = request.user
-        jobs = user.get_all_jobs()
-        serialized_job = JobSerializer(jobs, many=True)
+        serialized_job = JobSerializer(job, many=False)
         
         return Response(serialized_job.data)
     except Exception as e:
