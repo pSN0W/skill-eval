@@ -15,6 +15,7 @@ from .serializers import ApplicationBriefSerializer,UserSerializerWithToken, Job
 from .models import User,Job, Application
 from .permissions import JobPermissions, ApplicationPermissions
 
+from .bot_utils import get_question_from_jd, get_candidate_rating
 # Create your views here.
 
 
@@ -105,6 +106,9 @@ def create_job(request):
             location=data["location"]
         )
 
+        job_questions = get_question_from_jd(job.description)
+        job.questions = job_questions
+        
         job.save()
         
         serialized_job = JobSerializer(job, many=False)
@@ -140,10 +144,13 @@ def create_application(request,pk):
             job_id=job
         )
         extracted_information = extract_info_from_resume(request.data["resume_url"])
+        
+        ratings, chats = get_candidate_rating(job.questions, application.resume_url)
 
         application.name = extracted_information["name"]
         application.github = extracted_information["github"]
         application.email = extracted_information["email"]
+        application.analytics = {"ratings": ratings, "chats": chats}
 
         application.save()
         serialized_applications = ApplicationBriefSerializer(application,many=False)
