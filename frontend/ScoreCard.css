@@ -1,0 +1,37 @@
+.score-card {
+    margin-top: 100px;
+    margin-left: 100px;
+    width: 20%;
+    height:15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* align-items: ; */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  
+  .title {
+    
+    font-size: 18px;
+    text-align: left;
+  }
+  
+  .big-box {
+    display: flex;
+    align-items: end;
+  }
+
+  .text {
+    padding-bottom: 0.6rem;
+  }
+
+  .score-meter {
+    /* display: flex; */
+    width: 100px;
+  }
+  
+  /* You can adjust the styles further to match your design preferences */
+  
