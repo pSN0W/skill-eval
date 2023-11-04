@@ -1,0 +1,29 @@
+/* SideBar.css */
+.sidebar {
+    width: 20%;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+  }
+  
+  .sidebar h2 {
+    font-size: 20px;
+  }
+  
+  .job-description {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #444;
+  }
+  
+  .job-description h3 {
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  
+  .job-description p {
+    font-size: 14px;
+    color: #eee;
+  }
+  
