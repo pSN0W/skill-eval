@@ -122,7 +122,7 @@ def get_all_applications(request,pk):
         JobPermissions().has_object_permission(request,None,job)
         applications = job.get_all_applications()
         serialized_applications = ApplicationBriefSerializer(applications,many=True)
-        return Response(serialized_applications.data)
+        return Response({"desc":job.description, "applicants": serialized_applications.data})
     except Exception as e:
         message = {'detail':str(e)}
         return Response(message,status=status.HTTP_400_BAD_REQUEST)
