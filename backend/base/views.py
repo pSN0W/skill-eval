@@ -2,13 +2,15 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserSerializerWithToken
-from .models import User
+from .serializers import UserSerializerWithToken, JobSerializer
+from .models import User,Job
 # Create your views here.
 
 
@@ -65,3 +67,33 @@ def create_user(request):
     # Once the user has been created return the information of user with token
     serializer = UserSerializerWithToken(user)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_jobs(request):
+    """Api View to get all the jobs posted by the HR"""
+    user = request.user
+    jobs = user.get_all_jobs()
+    serialized_job = JobSerializer(jobs, many=True)
+    return Response(serialized_job.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_job(request):
+    """Api View to create a new job"""
+    
+    data = request.data
+
+    job = Job.objects.create(
+        creator=request.user,
+        title=data["title"],
+        description=data["description"],
+        location=data["location"]
+    )
+
+    job.save()
+    
+    user = request.user
+    jobs = user.get_all_jobs()
+    serialized_job = JobSerializer(jobs, many=True)
+    return Response(serialized_job.data)
