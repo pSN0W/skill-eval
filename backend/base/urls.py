@@ -8,4 +8,7 @@ urlpatterns = [
     path('users/create',views.create_user,name="users-create"),
     path('jobs',views.get_all_jobs,name="all-jobs"),
     path('jobs/create',views.create_job,name="create-job"),
+    path('jobs/<slug:pk>',views.get_all_applications,name="all-applications"),
+    path('applications/create/<slug:pk>',views.create_application,name="create-application"),
+    path('applications/<slug:pk>',views.get_application,name="get-application"),
 ]

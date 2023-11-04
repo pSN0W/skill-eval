@@ -44,7 +44,8 @@ class Job(models.Model):
 class Application(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     job_id=models.ForeignKey(Job,on_delete=models.CASCADE)
-    resume_link=models.CharField(max_length=100,null=False,blank=False)
+    resume_url=models.CharField(max_length=100,null=False,blank=False)
     name=models.CharField(max_length=100,blank=True,null=True)
     email=models.EmailField(blank=True,null=True)
     github=models.URLField(blank=True,null=True)
+    analytics=models.JSONField(blank=True,null=True)

@@ -9,8 +9,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserSerializerWithToken, JobSerializer
-from .models import User,Job
+from .serializers import ApplicationBriefSerializer,UserSerializerWithToken, JobSerializer, ApplicationSerializer
+from .models import User,Job, Application
+from .permissions import JobPermissions, ApplicationPermissions
 # Create your views here.
 
 
@@ -34,6 +35,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
     """Creating our own custom view to use our serializer"""
     serializer_class = MyTokenObtainPairSerializer
 
+
 @api_view(['GET'])
 def get_routes(request):
     """View to display all the endpoints"""
@@ -42,6 +44,7 @@ def get_routes(request):
         "users/create" : "Create a new user",
     }
     return Response(routes)
+
 
 @api_view(['POST'])
 def create_user(request):
@@ -65,8 +68,9 @@ def create_user(request):
     user.save()
     
     # Once the user has been created return the information of user with token
-    serializer = UserSerializerWithToken(user)
+    serializer = UserSerializerWithToken(user,many=False)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -76,6 +80,7 @@ def get_all_jobs(request):
     jobs = user.get_all_jobs()
     serialized_job = JobSerializer(jobs, many=True)
     return Response(serialized_job.data)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -97,3 +102,38 @@ def create_job(request):
     jobs = user.get_all_jobs()
     serialized_job = JobSerializer(jobs, many=True)
     return Response(serialized_job.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated,JobPermissions])
+def get_all_applications(request,pk):
+    job = Job.objects.get(id=pk)
+    JobPermissions().has_object_permission(request,None,job)
+    applications = job.get_all_applications()
+    serialized_applications = ApplicationBriefSerializer(applications,many=True)
+    return Response(serialized_applications.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated,JobPermissions])
+def create_application(request,pk):
+    job = Job.objects.get(id=pk)
+    JobPermissions().has_object_permission(request,None,job)
+    application = Application.objects.create(
+        resume_url=request.data["resume_url"],
+        job_id=job
+    )
+    
+    application.save()
+    applications = job.get_all_applications()
+    serialized_applications = ApplicationBriefSerializer(applications,many=True)
+    
+    return Response(serialized_applications.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated,ApplicationPermissions])
+def get_application(request,pk):
+    application = Application.objects.get(id=pk)
+    ApplicationPermissions().has_object_permission(request,None,application)
+    serialized_application = ApplicationSerializer(application,many=False)
+    return Response(serialized_application.data)

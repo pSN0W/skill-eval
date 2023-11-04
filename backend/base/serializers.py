@@ -20,6 +20,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = '__all__'
+
+class ApplicationBriefSerializer(serializers.ModelSerializer):
+    """"This serializer contains all fields of Application except analytics"""
+    class Meta:
+        model = Application
+        fields = ['resume_url','name','email','github','id']
         
 class UserSerializerWithToken(serializers.ModelSerializer):
     """Same as UserSerializer but will have one additional field for JWT token """
