@@ -87,4 +87,4 @@ def extract_info_from_resume(resume_url):
     
     required_data["email"] = result["personal_infos"]["mails"][0]
     
-    
+    return required_data
