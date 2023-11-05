@@ -7,7 +7,8 @@ INTERVIEW_EVALUATOR_PROMPT = """
     Interviewer: Share your past experience with C#
     Candidate: I have no experience with C# but I have previously worked with other languages and I think I can quickly learn it too. I had a group named GeekHaven where we used to learn about new things together and there I learn a lot on how to quickly learn new tenchnologies.
     Output:
-    {"technical_skill": 2, "relevance": 0, "leadership": null, "collaberation": 10, "reason": "The candidate doesn't know about C#. They do have technical knowledge of other language but doesn't share experience to verify it. Candidate has previously collberated with others to new learn thing"}
+    {"technical_skill": 2, "relevance": 0, "leadership": null, "collaberation": 10, "reason": "The candidate doesn't know about C# but has other similar knowledge"}
+    Give as small reason as possible
     """
     
 class InterviewEvaluator(JsonAgent):

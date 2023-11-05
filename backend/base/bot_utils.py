@@ -34,7 +34,7 @@ def get_candidate_rating(questions, resume_url):
     complete_rating = {
         "candidate_rating": candidate_rating,
         "project_rating": project_rating
-    }
+    } 
     return complete_rating,chat
     
 def get_complete_project_rating(resume_url):
@@ -64,7 +64,7 @@ def get_code_file_rating(code):
 def get_question_rating(que,resume_url):
     resume = get_resume_from_url(resume_url)
     interview_minute = get_interview_minute(que,resume)
-    ans_score = get_interview_score(interview_minute)
+    ans_score = get_interview_score(interview_minute+"\n Gives as small reason as possible")
     github_urls = extract_github_urls(interview_minute)
     resume_info = extract_info_from_resume(resume_url)
     if github_urls:
