@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { detailApplication } from "../../Actions/applicationActions";
+
 function DashBoard() {
   const dispatch = useDispatch();
   const id = useParams().id;

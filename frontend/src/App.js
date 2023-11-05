@@ -6,7 +6,7 @@ import SignUp from "./Components/SignUpPageComponent/SignupPage/signup";
 import HrPage from "./Components/hrPageComponents/hrPageComponents";
 import ApplicationList from "./Components/ApplicationComponent/applicationComponent";
 import CreateJob from "./Components/CreateJobComponent/createJob";
-import DashBoard from "./Components/DashBoard/dashboard";
+import FinalScoreDashboard from "./Components/DashBoard/FinalScoreDashboard";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
             <Route path="/jobs" element={<HrPage />} />
             <Route path="/jobs/create" element={<CreateJob />} />
             <Route path="/jobs/:id" element={<ApplicationList />} />
-            <Route path="/applications/:id" element={<DashBoard />} />
+            <Route path="/applications/:id" element={<FinalScoreDashboard />} />
           </Routes>
         </div>
       </div>

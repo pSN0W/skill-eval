@@ -151,7 +151,7 @@ def create_application(request,pk):
         application.github = extracted_information["github"]
         application.email = extracted_information["email"]
         application.analytics = {"ratings": ratings, "chats": chats}
-
+        application.rating = (ratings["candidate_rating"]["technical_skill"] + ratings["candidate_rating"]["relevance"])/2
         application.save()
         serialized_applications = ApplicationBriefSerializer(application,many=False)
         
