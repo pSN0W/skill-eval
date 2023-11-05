@@ -1,9 +1,9 @@
 from .json_agent import JsonAgent
 
 CODE_EVALUATOR_PROMPT = """
-You are a helpful bot tasked with evaluating code quality. Given a piece of code you must rate the code in term of readability, modularity and effeciency. You must rate each of them on scale of 0-10 and outut the result in json form. 
+You are a helpful bot tasked with evaluating code quality. Given a piece of code you must rate the code in term of readability, modularity and efficiency. You must rate each of them on scale of 0-10 and outut the result in json form. 
 Example output
-{"readability": 6, "modularity": 5, "effeciency": 9}
+{"readability": 6, "modularity": 5, "efficiency": 9}
 """
 
 class CodeEvaluator(JsonAgent):

@@ -8,7 +8,7 @@ import "./FinalScoreDashboard.css"; // Create a CSS file for styling
 import ScoreCard from "./ScoreCard";
 import ProjectScoreCard from "./ProjectScoreCard";
 import { detailApplication } from "../../Actions/applicationActions";
-import ChatComponent from "./ChatComponent"
+import ChatComponent from "./ChatComponent";
 
 const FinalScoreDashboard = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,6 @@ const FinalScoreDashboard = () => {
   useEffect(() => {
     dispatch(detailApplication(id));
   }, []);
-  console.log(applicationDetail);
   // return <div>Hello</div>;
   const projectName1 = "notes-generator";
   const projectName2 = "warehouse-optimisation";
@@ -53,9 +52,7 @@ const FinalScoreDashboard = () => {
       {/* <HrInfo/> */}
       <div className="window">
         <div className="first-window">
-          <div className="first-column">
-
-          </div>
+          <div className="first-column"></div>
 
           <div className="middle-column">
             {/* <ProjectScoreCard projectName={"jApi"} scores={scores}/> */}
@@ -64,14 +61,19 @@ const FinalScoreDashboard = () => {
             <ScoreCard
               title={"Technical Skill"}
               score={
-                63
+                Math.ceil(
+                  applicationDetail?.analytics?.ratings?.candidate_rating
+                    ?.technical_skill * 10
+                )
+                // 64
               }
             />
             <ScoreCard
               title={"Relevance Skill"}
-              score={
-                72
-              }
+              score={Math.ceil(
+                applicationDetail?.analytics?.ratings?.candidate_rating
+                  ?.relevance * 10
+              )}
             />
           </div>
 
@@ -82,10 +84,15 @@ const FinalScoreDashboard = () => {
         </div>
 
         <div className="second-window">
-          <ProjectScoreCard projectName={projectName1} scores={scores1} />
-          <ProjectScoreCard projectName={projectName2} scores={scores2} />
-          <ProjectScoreCard projectName={projectName3} scores={scores3} />
-          <ChatComponent/>
+          {applicationDetail?.analytics?.ratings?.project_rating &&
+            Object.entries(
+              applicationDetail?.analytics?.ratings?.project_rating
+            ).map((key, val) => {
+              return <ProjectScoreCard projectName={key[0]} {...key[1]} />;
+})}
+          {/* <ProjectScoreCard projectName={projectName2} scores={scores2} />
+          <ProjectScoreCard projectName={projectName3} scores={scores3} /> */}
+          <ChatComponent chat={applicationDetail?.analytics?.chats} />
         </div>
       </div>
     </div>
