@@ -4,7 +4,8 @@ from .agents.hr_manager import HRManager
 from .agents.interviewer import Interviewer
 from .agents.interview_evaluator import InterviewEvaluator
 from .agents.project_evaluator import ProjectEvaluator
-from .utils import get_repo_description,get_resume_from_url,extract_github_urls, check_for_inclusion_from_resume, extract_info_from_resume
+from .agents.code_evaluator import CodeEvaluator
+from .utils import get_repo_description,get_resume_from_url,extract_github_urls, check_for_inclusion_from_resume, extract_info_from_resume, get_filedata_of_repo
 
 def get_question_from_jd(jd):
     jd += "\n\nNOTE: in your output terminate each question with a new line character"
@@ -28,8 +29,37 @@ def get_candidate_rating(questions, resume_url):
             if v is not None and k!="":
                 final_score.setdefault(k,[])
                 final_score[k].append(v)
-    rating = {k:sum(v)/len(v) for k,v in final_score.items() if k!="reason"}
-    return rating,chat
+    candidate_rating = {k:sum(v)/len(v) for k,v in final_score.items() if k!="reason"}
+    project_rating = get_complete_project_rating(resume_url)
+    complete_rating = {
+        "candidate_rating": candidate_rating,
+        "project_rating": project_rating
+    }
+    return complete_rating,chat
+    
+def get_complete_project_rating(resume_url):
+    project_ratings = {}
+    for repo in extract_github_urls(get_resume_from_url(resume_url)):
+        repo_description = get_repo_description(repo)
+        repo_file_data = get_filedata_of_repo(repo)
+        project_description_rating = get_project_rating(repo_description)
+        project_code_rating = get_code_file_rating(repo_file_data)
+        project_code_rating["complexity"] = project_description_rating["complexity"]
+        project_code_rating["uniqueness"] = project_description_rating["uniqueness"]
+        
+        repo_name = repo.strip('/').split('/')[-1]
+        project_ratings[repo_name] = project_code_rating
+    return project_ratings
+
+def get_code_file_rating(code):
+    code += "\n\n evaluate the code for its cleanliness and return the json. You must do the rating and only return the keys for readability, modularity, effeciency"
+    code_evaluator = CodeEvaluator()
+    user_proxy = ConversationInitializer()
+    user_proxy.initiate_chat(
+        code_evaluator,
+        message=code
+    )
+    return code_evaluator.get_rating()
     
 def get_question_rating(que,resume_url):
     resume = get_resume_from_url(resume_url)
