@@ -46,7 +46,7 @@ export const applicationsCreateReducer = (state = {}, action) => {
 
 export const applicationsDetailReducer = (
   state = {
-    analytics: { ratings: { candidate_rating: {}, project_rating: {} }, chats },
+    analytics: { ratings: { candidate_rating: {}, project_rating: {} } },
   },
   action
 ) => {
@@ -56,8 +56,7 @@ export const applicationsDetailReducer = (
         loading: true,
         applicationDetail: {
           analytics: {
-            ratings: { candidate_rating: {}, project_rating: {} },
-            chats,
+            ratings: { candidate_rating: {}, project_rating: {} }
           },
         },
       };

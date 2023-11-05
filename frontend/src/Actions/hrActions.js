@@ -32,7 +32,7 @@ export const loginAction = (username, password, email, name, organisation) => as
     });
 
     // redirect to the home page
-    window.location.href = "/";
+    window.location.href = "/jobs";
 
     // store the HRInfo in local storage
     localStorage.setItem("userInfo", JSON.stringify(data));

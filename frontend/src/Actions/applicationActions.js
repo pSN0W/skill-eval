@@ -110,26 +110,15 @@ export const detailApplication = (id) => async (dispatch) => {
         },
       };
       const { data } = await axios.get(
-        `http://127.0.0.1:8000/api/notes/${id}`,
+        `http://127.0.0.1:8000/api/applications/${id}`,
         config
       );
       dispatch({
         type: APPLICATIONS_DETAIL_SUCCESS,
-        payload: dataFinal,
+        payload: data,
       });
-    } else {
-      // if user info does not exist then make a get request without any token
-      const { data } = await axios.get(`http://127.0.0.1:8000/api/notes/${id}`);
-      dataFinal = data;
-    }
+    } 
   } catch (error) {
-    dispatch({
-      // in case of error return error message
-      type: APPLICATIONS_DETAIL_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message,
-    });
+    window.location.href = "/login"
   }
 };
